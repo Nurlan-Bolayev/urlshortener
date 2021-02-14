@@ -9,7 +9,6 @@ import VerifyEmailNotice from '@/views/VerifyEmailNotice'
 import EmailVerified from "@/views/EmailVerified";
 import ForgotPassword from "@/views/ForgotPassword";
 import ResetPassword from "@/views/ResetPassword";
-// import Statistics from "@/views/Statistics";
 
 Vue.use(VueRouter)
 
@@ -21,12 +20,14 @@ const routes = [
 
   {
     path: '/register',
-    component: Register
+    component: Register,
+    meta: { guestOnly: true }
   },
 
   {
     path: '/login',
-    component: Login
+    component: Login,
+    meta: { guestOnly: true }
   },
 
   {

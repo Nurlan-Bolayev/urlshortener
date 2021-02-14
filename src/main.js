@@ -6,10 +6,12 @@ import vuetify from './plugins/vuetify';
 import '@mdi/font/css/materialdesignicons.css'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import {buildRequiresAuthGuard} from "@/router/middlewares/requires-auth";
+import {buildGuestOnlyGuard} from "@/router/middlewares/guest-only";
 
 Vue.config.productionTip = false
 
 router.beforeEach(buildRequiresAuthGuard(store))
+router.beforeEach(buildGuestOnlyGuard(store))
 
 new Vue({
   router,

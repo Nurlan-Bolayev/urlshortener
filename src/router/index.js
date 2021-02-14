@@ -36,7 +36,8 @@ const routes = [
 
   {
     path: '/statistics/:short_url',
-    component: UrlStatistics
+    component: UrlStatistics,
+    meta: { requiresAuth: true }
   },
 
   {

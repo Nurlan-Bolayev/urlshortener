@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Welcome from '@/views/Welcome.vue'
 import Login from "@/views/Login";
 import Register from "@/views/Register";
-import Feeds from "@/views/Feeds";
+import Home from "@/views/Home";
 import UrlStatistics from "@/views/UrlStatistics";
 import VerifyEmailNotice from '@/views/VerifyEmailNotice'
 import EmailVerified from "@/views/EmailVerified";
@@ -15,9 +15,8 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/welcome',
+    component: Welcome
   },
 
   {
@@ -31,9 +30,8 @@ const routes = [
   },
 
   {
-    path: '/feeds',
-    component: Feeds,
-    meta: { requiresAuth: true }
+    path: '/',
+    component: Home,
   },
 
   {

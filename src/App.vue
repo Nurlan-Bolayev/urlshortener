@@ -46,7 +46,7 @@ export default {
         this.isLoggingOut = true;
         await axios.post('api/logout');
         this.$store.commit('setUser', null);
-        this.$router.push('/');
+        this.$router.push('/welcome');
       } finally {
         this.isLoggingOut = false;
       }

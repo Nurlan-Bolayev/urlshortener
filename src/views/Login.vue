@@ -42,7 +42,7 @@ export default {
         this.isLoading = true;
         const {data} = await axios.post('/api/login', this.body);
         this.$store.commit('setUser', data);
-        this.$router.push(this.$route.query.redirect ?? '/feeds');
+        this.$router.push(this.$route.query.redirect ?? '/');
       } catch (e) {
         this.errors = e.response?.data?.errors || {};
       } finally {

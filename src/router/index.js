@@ -32,7 +32,8 @@ const routes = [
 
   {
     path: '/feeds',
-    component: Feeds
+    component: Feeds,
+    meta: { requiresAuth: true }
   },
 
   {

@@ -36,17 +36,16 @@ export default {
       errors : {},
     }
   },
-  methods : {
-    async login(){
+  methods: {
+    async login() {
       try {
         this.isLoading = true;
-        const {data} = await axios.post('/api/login',this.body);
-        this.$store.commit('setUser',data);
-        this.$router.push("/feeds");
-     }catch (e){
+        const {data} = await axios.post('/api/login', this.body);
+        this.$store.commit('setUser', data);
+        this.$router.push(this.$route.query.redirect ?? '/feeds');
+      } catch (e) {
         this.errors = e.response?.data?.errors || {};
-      }
-      finally {
+      } finally {
         this.isLoading = false;
       }
     }

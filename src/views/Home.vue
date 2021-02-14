@@ -54,10 +54,21 @@
   </div>
 </template>
 <script>
-// import ChartVue from '@/views/Chart';
+import store from '@/store';
 import axios from '@/axios';
 
 export default {
+  async beforeRouteEnter(from, to, next) {
+    await store.dispatch('fetchUser').catch(() => {
+    })
+
+    if (store.state.user) {
+      next()
+    } else {
+      next('/welcome');
+    }
+  },
+
   data() {
     return {
       user: null,
@@ -84,14 +95,10 @@ export default {
       try {
         this.isLoading = true;
         const {data} = await axios.post('api/urls/add-url', this.body);
-        let exists = this.urls.filter(url => {
-          return url.url === data.url;
-        }).length;
-        console.log(exists);
+        let exists = this.urls.filter(url => url.url === data.url).length;
         if (!exists) {
           this.urls.push(data);
         }
-        console.log(data);
         this.errors = {};
       } catch (e) {
         this.errors = e.response?.data?.errors || {};
@@ -102,25 +109,13 @@ export default {
   },
   created() {
     this.hasUrls = Boolean(this.urls.length) || false
-  }
-  ,
+  },
+
   async mounted() {
     try {
       this.isFetchingUrls = true
       const {data} = await axios.get(`api/urls`);
       this.urls = data;
-      // let uniqueUrls = [];
-      // for (let i = 0; i < this.urls.length; i++) {
-      //   for (let j = i + 1; j < this.urls.length; j++) {
-      //     if (this.urls[i] !== this.urls[j]) {
-      //       if (j === this.urls.length - 1) {
-      //         uniqueUrls.push(this.urls[i]);
-      //         this.urls = this.urls.filter(url => url.url !== this.urls[i].url)
-      //       }
-      //     }
-      //   }
-      // }
-      // this.urls = uniqueUrls;
     } finally {
       this.isFetchingUrls = false
     }

@@ -37,6 +37,15 @@ import axios from "@/axios";
 import store from '@/store';
 
 export default {
+  async beforeRouteEnter(from, to, next) {
+    await store.dispatch('fetchUser').catch(() => {})
+
+    if (store.state.user) {
+      next('/')
+    } else {
+      next();
+    }
+  },
   data: () => ({
     body: {
       url: '',

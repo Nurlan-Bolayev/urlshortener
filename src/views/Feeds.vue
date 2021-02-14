@@ -37,7 +37,7 @@
 
           <template v-slot:item.action="{item}">
             <v-btn :href="`http://localhost:8000/api/urls/${item.short_url}`" target="_blank">
-              <v-icon>{{ mdiOpenInNew }}</v-icon>
+              <v-icon>mdi-open-in-new</v-icon>
             </v-btn>
           </template>
 
@@ -53,14 +53,12 @@
 <script>
 // import ChartVue from '@/views/Chart';
 import axios from '@/axios';
-import {mdiOpenInNew} from '@mdi/js';
 
 export default {
   data() {
     return {
       user: null,
       hasUrls: false,
-      mdiOpenInNew: mdiOpenInNew,
       headers: [
         {text: 'ID', value: 'id'},
         {text: 'Url', value: 'url'},

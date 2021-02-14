@@ -3,37 +3,44 @@
     <v-form style="width: 40%" @submit.prevent="login">
       <v-text-field
           class="ma-2 pa-6"
+          outlined
           v-model="body.email"
           label="Email"
           :error-messages="errors.email"
       />
       <v-text-field
           class="ma-2 pa-6"
+          outlined
           v-model="body.password"
           :error-messages="errors.password"
           label="Password"
           type="password"
       />
 
-      <v-btn style="margin: auto 45%" color="green" type="submit" :loading="isLoading">Login</v-btn>
+      <v-btn style="margin: auto 45%" color="green" type="submit" :loading="isLoading" dark>Login</v-btn>
 
     </v-form>
-    <div class="mt-5 d-flex justify-center"><router-link style="text-decoration: none" to="/forgot/password">Forgot your password?</router-link></div>
-    <div style="margin-top: 80px">If you do not have an account,please <router-link style="text-decoration: none" to="/register">Register</router-link></div>
+    <div class="mt-5 d-flex justify-center">
+      <router-link style="text-decoration: none" to="/forgot/password">Forgot your password?</router-link>
+    </div>
+    <div style="margin-top: 80px">If you do not have an account,please
+      <router-link style="text-decoration: none" to="/register">Register</router-link>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from '@/./axios'
+
 export default {
-  data(){
+  data() {
     return {
-      body : {
-        email : '',
-        password : ''
+      body: {
+        email: '',
+        password: ''
       },
-      isLoading : false,
-      errors : {},
+      isLoading: false,
+      errors: {},
     }
   },
   methods: {

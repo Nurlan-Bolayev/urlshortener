@@ -55,11 +55,6 @@ export default {
   ,
   async mounted() {
     await this.$store.dispatch('fetchUser');
-    if (!this.$store.state.user) {
-      if (this.$route.path.includes('feeds')) {
-        this.$router.push('/');
-      }
-    }
   },
 };
 </script>

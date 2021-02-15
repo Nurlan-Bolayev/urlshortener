@@ -5,22 +5,39 @@
         color="primary"
         dark
     >
-      <div class="d-flex justify-space-around" style="width: 100%">
-        <v-btn to="/"
+      <router-link to="/">
+        <div class="d-flex align-center">
+        <span class="pl-5"
+              style="color: white; font-size: x-large; font-family: cursive; font-weight: bold; font-style: italic">
+          Url Shortener App
+        </span>
+        </div>
+      </router-link>
 
-        >Home
-        </v-btn>
-        <div>
-          <div v-if="this.$store.state.user" style="display: flex;justify-content: space-between">
-            <v-btn to="/feeds" class="mr-3">{{ this.$store.state.user.name }}
+      <v-spacer/>
+
+      <div>
+        <v-menu v-if="$store.state.user" offset-y>
+          <template #activator="{on}">
+            <v-btn text v-on="on">
+              {{ $store.state.user.name }}
             </v-btn>
-            <v-btn :loading="isLoggingOut" @click="logout">Logout</v-btn>
-          </div>
-          <v-btn class="" v-else to="/login">Login</v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item @click="logout">
+              <v-list-item-title>
+                Log out
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+
+        <div v-else>
+          <v-btn text to="/login">Login</v-btn>
+          <v-btn text to="/register">Sign up</v-btn>
         </div>
       </div>
-
-      <!--      <v-spacer></v-spacer>-->
     </v-app-bar>
 
     <v-main class="main">

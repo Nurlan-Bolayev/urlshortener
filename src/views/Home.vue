@@ -15,7 +15,7 @@
       </v-form>
     </div>
     <div class="d-flex align-center justify-center flex-column" style="height: 100%">
-      <div class="mt-16" style="width: 50%">
+      <div class="mt-16 text-center" style="width: 50%">
         <v-data-table
             :headers="headers"
             :items="urls"
@@ -74,12 +74,12 @@ export default {
       user: null,
       hasUrls: false,
       headers: [
-        {text: 'ID', value: 'id'},
-        {text: 'Url', value: 'url'},
-        {text: 'Shortened Url', value: 'short_url'},
-        {text: 'Action', value: 'action'},
-        {text: 'Total clicks', value: 'click_count'},
-        {text: 'Last-click', value: 'last_click'},
+        {text: 'ID', value: 'id', align: 'center',},
+        {text: 'Url', value: 'url',align: 'center'},
+        {text: 'Shortened Url', value: 'short_url',align: 'center'},
+        {text: 'Action', value: 'action',align: 'center'},
+        {text: 'Total clicks', value: 'click_count',align: 'center'},
+        {text: 'Last-click', value: 'last_click',align: 'center'},
       ],
       errors: [],
       urls: [],

@@ -1,31 +1,48 @@
 <template>
-  <div class="d-flex flex-column justify-center align-center" style="height: 100%">
-    <v-form style="width: 40%" @submit.prevent="login">
-      <v-text-field
-          class="ma-2 pa-6"
-          outlined
-          v-model="body.email"
-          label="Email"
-          :error-messages="errors.email"
-      />
-      <v-text-field
-          class="ma-2 pa-6"
-          outlined
-          v-model="body.password"
-          :error-messages="errors.password"
-          label="Password"
-          type="password"
-      />
+  <div>
+    <v-form @submit.prevent="login" class="d-flex align-center justify-center pt-15">
+      <v-card class="pa-5" max-width="450">
+        <v-card-title>
+          <h1 class="mb-5">Login</h1>
+        </v-card-title>
 
-      <v-btn style="margin: auto 45%" color="green" type="submit" :loading="isLoading" dark>Login</v-btn>
+        <v-card-text>
+          <v-text-field
+              label="Email"
+              type="email"
+              name="email"
+              v-model="body.email"
+              outlined
+              :error-messages="errors.email"
+          />
 
+          <v-text-field
+              label="Password"
+              type="password"
+              v-model="body.password"
+              outlined
+              messages=""
+              :error-messages="errors.password"
+          />
+
+          <div class="d-flex" style="position: relative">
+            <v-spacer/>
+            <router-link to="/forgot/password" style="position: absolute; top: -21px; right: 0">
+              Forgot password?
+            </router-link>
+          </div>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn color="primary" type="submit" :loading="isLoading">Login</v-btn>
+          <v-spacer/>
+          <div class="pl-5">
+            If you don't have an account,
+            <router-link to="/register">Please register</router-link>
+          </div>
+        </v-card-actions>
+      </v-card>
     </v-form>
-    <div class="mt-5 d-flex justify-center">
-      <router-link style="text-decoration: none" to="/forgot/password">Forgot your password?</router-link>
-    </div>
-    <div style="margin-top: 80px">If you do not have an account,please
-      <router-link style="text-decoration: none" to="/register">Register</router-link>
-    </div>
   </div>
 </template>
 

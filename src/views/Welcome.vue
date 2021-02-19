@@ -96,7 +96,7 @@ export default {
     },
 
     shortUrl(url) {
-      return `http://localhost:8000/api/urls/${url.short_url}`;
+      return `http://localhost:8000/${url.short_url}`;
     }
   },
 

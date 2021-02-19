@@ -114,7 +114,6 @@ export default {
 
   data() {
     return {
-      user: null,
       headers: [
         {text: 'ID', value: 'id', align: 'center',},
         {text: 'Url', value: 'url', align: 'center'},

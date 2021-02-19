@@ -14,48 +14,80 @@
         </v-btn>
       </v-form>
     </div>
-    <div class="d-flex align-center justify-center flex-column" style="height: 100%;width: 100vw">
-      <div class="mt-16 text-center" style="overflow: hidden;width: 85%">
+    <div class="d-flex align-center justify-center" style="height: 100%;width: 100vw">
+      <div class="mt-16" style="width: 85%">
         <v-data-table
             :headers="headers"
             :items="urls"
-            :items-per-page="5"
             item-key="name"
-            class="elevation-1"
+            class="elevation-3"
             :loading="isFetchingUrls"
             no-data-text="You have no urls 🙁"
         >
+          <template #top>
+            <div class="pt-2"></div>
+          </template>
+
+          <template #item.url="{value}">
+            <div class="d-flex align-center">
+              <span class="collapse-text">{{ value }}</span>
+              <v-btn class="mr-3" icon :href="value" target="_blank">
+                <v-icon>mdi-open-in-new</v-icon>
+              </v-btn>
+            </div>
+          </template>
+
           <template v-slot:item.short_url="{item}">
-            <v-btn :to="`/statistics/${item.short_url}`">Url</v-btn>
+            <span class="mr-3">{{ shortUrl(item) }}</span>
+            <v-btn
+                depressed
+                small
+                dark
+                :color="isCopied[item.id] ? 'success' : 'blue lighten-1'"
+                @click="copy(item, item.id)"
+            >
+              {{ isCopied[item.id] ? 'Copied!' : 'Copy' }}
+            </v-btn>
           </template>
 
           <template v-slot:item.action="{item}">
-            <div class="d-flex">
-              <v-btn class="mr-3" :href="`http://localhost:8000/${item.short_url}`"
-                     target="_blank">
-                <v-icon>mdi-open-in-new</v-icon>
+            <div class="d-flex align-center">
+              <v-btn color="primary" class="mr-3" small dark :to="`/statistics/${item.id}`">
+                <v-icon left>
+                  mdi-eye
+                </v-icon>
+
+                Statistics
               </v-btn>
-              <button @click="copy($event,item)"
-                      style="outline: none;color:white;background-color: #4caf50;padding: 5px 10px;width:60px;border-radius: 5px;margin-right: 10px">
-                Copy
-              </button>
-              <v-btn class="delete-button" :loading="urlToBeDeleted === item.id" color="red" dark
-                     @click="deleteUrl(item)">
+
+              <v-btn
+                  class="delete-button"
+                  icon
+                  color="red"
+                  dark
+                  :loading="urlToBeDeleted === item.id"
+                  @click="deleteUrl(item)"
+              >
                 <v-icon>
                   mdi-trash-can-outline
                 </v-icon>
               </v-btn>
             </div>
+
           </template>
 
           <template v-slot:item.total_clicks="{item}">
             {{ item.total_clicks ? item.total_clicks : 0 }}
           </template>
+
           <template v-slot:item.last_click="{value}">
             <div style="width: 100px">
               <div>
-                <span v-if="value === ''">-</span>
-                <span v-else class="d-flex align-content-center justify-center"><v-icon>mdi-calendar-month</v-icon>{{ value }}</span>
+                <span v-if="value" class="d-flex align-content-center justify-center">
+                  <v-icon>mdi-calendar-month</v-icon>
+                  {{ value }}
+                </span>
+                <span v-else>Not clicked yet</span>
               </div>
             </div>
           </template>
@@ -83,59 +115,76 @@ export default {
   data() {
     return {
       user: null,
-      hasUrls: false,
       headers: [
         {text: 'ID', value: 'id', align: 'center',},
         {text: 'Url', value: 'url', align: 'center'},
         {text: 'Shortened Url', value: 'short_url', align: 'center'},
-        {text: 'Action', value: 'action', align: 'center'},
+        {text: 'Action', value: 'action', align: 'center', sortable: false},
         {text: 'Total clicks', value: 'click_count', align: 'center'},
         {text: 'Last-click', value: 'last_click', align: 'center'},
       ],
-      errors: [],
-      copiedUrl: '',
+      errors: {},
       urls: [],
       body: {
         url: '',
       },
       isLoading: false,
       isFetchingUrls: false,
-      urlToBeDeleted: false
+      urlToBeDeleted: false,
+      isCopied: {},
     }
   },
   methods: {
     async deleteUrl(item) {
       try {
-        if(!confirm('Are you sure to delete?')){
+        if (!confirm('Are you sure to delete?')) {
           return
         }
+
         this.urlToBeDeleted = item.id;
-        console.log(this.urlToBeDeleted);
         await axios.delete(`api/${item.short_url}`);
-        location.reload();
+        this.fetchUrls();
       } catch (e) {
         //
       } finally {
         this.urlToBeDeleted = false;
       }
     },
-    copy(e, item) {
-      let input = document.createElement('input');
-      this.$el.append(input);
-      input.style.cssText = 'position:absolute;top:-999999px;left:-999999px';
-      input.value = `http://localhost:8000/${item.short_url}`;
-      console.log(e.target.value);
-      e.target.style.innerText = 'Copied!';
-      console.log(e.target.style.innerText);
-      setInterval(() => e.target.style.innerText = 'Copy', 2000);
-      input.remove();
-    }
-    ,
+    copy(url, i) {
+      const el = document.createElement('input');
+      el.value = this.shortUrl(url);
+      el.style.cssText = 'position: absolute; left: -999999px; top: -999999px'
+      this.$el.append(el);
+
+      el.select();
+      el.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      el.remove();
+
+      this.isCopied = {...this.isCopied, [i]: true}
+      setTimeout(() => this.isCopied = {...this.isCopied, [i]: false}, 1000)
+    },
+
+
+    shortUrl(url) {
+      return `http://localhost:8000/${url.short_url}`;
+    },
+
+    async fetchUrls() {
+      try {
+        this.isFetchingUrls = true
+        const {data} = await axios.get(`api/urls`);
+        this.urls = data;
+      } finally {
+        this.isFetchingUrls = false
+      }
+    },
+
     async shorten() {
       try {
         this.isLoading = true;
         const {data} = await axios.post('api/urls/add-url', this.body);
-        let exists = this.urls.filter(url => url.url === data.url).length;
+        const exists = this.urls.filter(url => url.url === data.url).length;
         if (!exists) {
           this.urls.push(data);
         }
@@ -147,18 +196,9 @@ export default {
       }
     }
   },
-  created() {
-    this.hasUrls = Boolean(this.urls.length) || false
-  },
 
-  async mounted() {
-    try {
-      this.isFetchingUrls = true
-      const {data} = await axios.get(`api/urls`);
-      this.urls = data;
-    } finally {
-      this.isFetchingUrls = false
-    }
+  mounted() {
+    this.fetchUrls()
   }
 }
 </script>
@@ -166,5 +206,11 @@ export default {
 <style scoped>
 ::v-deep .v-data-table__empty-wrapper {
   color: black !important;
+}
+
+.collapse-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

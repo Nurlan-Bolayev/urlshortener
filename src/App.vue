@@ -25,6 +25,11 @@
           </template>
 
           <v-list>
+            <v-list-item to="/">
+              <v-list-item-title>
+                Home
+              </v-list-item-title>
+            </v-list-item>
             <v-list-item @click="logout">
               <v-list-item-title>
                 Log out

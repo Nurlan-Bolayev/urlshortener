@@ -9,25 +9,24 @@
             placeholder="Enter url to shorten..."
             :error-messages="errors.url"
         />
-        <v-btn class="mb-7 ml-3" style="width: 30%;" color="green" type="submit" dark :loading="isLoading">Shorten
+        <v-btn class="mb-7 ml-3" color="green" type="submit" dark :loading="isLoading">Shorten
         </v-btn>
       </v-form>
     </div>
-    <div class="d-flex justify-center align-center">
-      <div style="width: 50%">
-        <v-card class="ma-2" v-for="(url,i) in urls" :key="i">
-          <v-card-text class="d-flex">
-            <v-card-text class="align-start">{{ url.url }}</v-card-text>
-            <div class="d-flex justify-space-around align-center">
-              <a style="margin-right: 10px;text-decoration: none" target="_blank"
-                 :href="url.url">{{ shortUrl(url) }}</a>
-              <button class="copy-button" @click="copy($event,url)"
-                      style="background: lightblue;color: white;padding: 10px;border-radius: 4px">Copy
-              </button>
-            </div>
-          </v-card-text>
-        </v-card>
-      </div>
+    <div class="d-flex justify-center align-center flex-column">
+      <v-card class="ma-2" v-for="(url,i) in urls" :key="i">
+        <v-card-text class="d-flex flex-column flex-sm-row align-sm-center justify-space-around">
+          <span class="collapse-text mr-3">{{ url.url }}</span>
+
+          <div class="d-flex align-center">
+            <a class="short-url collapse-text" :href="url.url" target="_blank">{{ shortUrl(url) }}</a>
+
+            <v-btn :color="isCopied[i] ? 'success' : 'blue lighten-1'" dark @click="copy(url, i)">
+              {{ isCopied[i] ? 'Copied!' : 'Copy' }}
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
     </div>
   </div>
 </template>
@@ -38,7 +37,8 @@ import store from '@/store';
 
 export default {
   async beforeRouteEnter(from, to, next) {
-    await store.dispatch('fetchUser').catch(() => {})
+    await store.dispatch('fetchUser').catch(() => {
+    })
 
     if (store.state.user) {
       next('/')
@@ -51,12 +51,14 @@ export default {
       url: '',
     },
     isLoading: false,
+    isCopied: {},
     urls: [],
     value: '',
     errors: {}
   }),
+
   methods: {
-    copy(e, url) {
+    copy(url, i) {
       const el = document.createElement('input');
       el.value = this.shortUrl(url);
 
@@ -67,22 +69,12 @@ export default {
       el.setSelectionRange(0, 99999);
       document.execCommand("copy");
       el.remove();
-      this.animate(e);
+
+      this.isCopied = {...this.isCopied, [i]: true}
+      setTimeout(() => this.isCopied = {...this.isCopied, [i]: false}, 1000)
     },
-    animate(e) {
 
-
-      console.log(e.target.color);
-      e.target.style.background = 'green';
-      e.target.innerText = 'Copied!';
-      setInterval(() => {
-        e.target.style.background = 'lightblue';
-        e.target.innerText = 'Copy';
-      }, 1000)
-    }
-    ,
     async shorten() {
-
       try {
         this.isLoading = true;
         const {data} = await axios.post('api/urls/add-url', this.body);
@@ -106,3 +98,16 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.collapse-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.short-url {
+  margin-right: 10px;
+  text-decoration: none
+}
+</style>
